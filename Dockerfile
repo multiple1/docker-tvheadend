@@ -95,7 +95,7 @@ RUN \
     --disable-bintray_cache \
     --disable-execinfo \
     --disable-hdhomerun_static \
-    --enable-hdhomerun_client \
+    --disable-hdhomerun_client \
     --enable-libav \
     --enable-pngquant \
     --enable-trace \
