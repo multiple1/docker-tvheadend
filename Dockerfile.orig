@@ -13,7 +13,7 @@ ARG ARGTABLE_VER="2.13"
 
 # environment settings
 ARG TZ="Etc/UTC"
-ARG TVHEADEND_COMMIT="fd8b9e8ba21600d0bf6cdb20a7cc153482a2efa5"
+ARG TVHEADEND_COMMIT="76a6263f1be4e3ccff968b47155b050fcc15f042"
 ENV HOME="/config"
 
 # copy patches and picons
@@ -62,6 +62,32 @@ RUN \
   cp /usr/include/gnu-libiconv/iconv.h /usr/include/iconv.h
 
 RUN \
+<<<<<<< HEAD
+=======
+  echo "**** install perl modules for xmltv ****" && \
+  curl -s -L https://cpanmin.us | perl - App::cpanminus && \
+  cpanm --installdeps /tmp/patches
+
+RUN \
+  echo "**** compile XMLTV ****" && \
+  git clone https://github.com/XMLTV/xmltv.git /tmp/xmltv && \
+  cd /tmp/xmltv && \
+  git checkout ${XMLTV_VER} && \
+  echo "**** Perl 5.26 fixes for XMTLV ****" && \
+  sed "s/use POSIX 'tmpnam';//" -i filter/tv_to_latex && \
+  sed "s/use POSIX 'tmpnam';//" -i filter/tv_to_text && \
+  sed "s/\(lib\/set_share_dir.pl';\)/.\/\1/" -i grab/it/tv_grab_it.PL && \
+  sed "s/\(filter\/Grep.pm';\)/.\/\1/" -i filter/tv_grep.PL && \
+  sed "s/\(lib\/XMLTV.pm.in';\)/.\/\1/" -i lib/XMLTV.pm.PL && \
+  sed "s/\(lib\/Ask\/Term.pm';\)/.\/\1/" -i Makefile.PL && \
+  PERL5LIB=`pwd` && \
+  echo -e "yes" | perl Makefile.PL PREFIX=/usr/ INSTALLDIRS=vendor && \
+  make -j && \
+  make test && \
+  make DESTDIR=/tmp/xmltv-build install
+
+RUN \
+>>>>>>> 4c2ea7a (Update Dockerfile)
   echo "**** compile tvheadend ****" && \
   if [ -z ${TVHEADEND_COMMIT+x} ]; then \
     TVHEADEND_COMMIT=$(curl -sX GET https://api.github.com/repos/tvheadend/tvheadend/commits/master \
@@ -106,7 +132,7 @@ RUN \
     --prefix=/usr \
     --python=python3 \
     --sysconfdir=/config && \
-  make -j 2 && \
+  make -j && \
   make DESTDIR=/tmp/tvheadend-build install
 
 RUN \
@@ -124,7 +150,7 @@ RUN \
   cd /tmp/argtable && \
   ./configure \
     --prefix=/usr && \
-  make -j 2 && \
+  make -j && \
   make check && \
   make DESTDIR=/tmp/argtable-build install && \
   echo "**** copy to /usr for comskip dependency ****" && \
@@ -138,7 +164,7 @@ RUN \
   ./configure \
     --bindir=/usr/bin \
     --sysconfdir=/config/comskip && \
-  make -j 2 && \
+  make -j && \
   make DESTDIR=/tmp/comskip-build install
 
 RUN \
