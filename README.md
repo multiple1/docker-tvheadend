@@ -28,7 +28,7 @@ Find us at:
 
 # [linuxserver/tvheadend](https://github.com/linuxserver/docker-tvheadend)
 
-[![Scarf.io pulls](https://scarf.sh/installs-badge/linuxserver-ci/linuxserver%2Ftvheadend?color=94398d&label-color=555555&logo-color=ffffff&style=for-the-badge&package-type=docker)](https://scarf.sh/gateway/linuxserver-ci/docker/linuxserver%2Ftvheadend)
+[![Scarf.io pulls](https://scarf.sh/installs-badge/linuxserver-ci/linuxserver%2Ftvheadend?color=94398d&label-color=555555&logo-color=ffffff&style=for-the-badge&package-type=docker)](https://scarf.sh)
 [![GitHub Stars](https://img.shields.io/github/stars/linuxserver/docker-tvheadend.svg?color=94398d&labelColor=555555&logoColor=ffffff&style=for-the-badge&logo=github)](https://github.com/linuxserver/docker-tvheadend)
 [![GitHub Release](https://img.shields.io/github/release/linuxserver/docker-tvheadend.svg?color=94398d&labelColor=555555&logoColor=ffffff&style=for-the-badge&logo=github)](https://github.com/linuxserver/docker-tvheadend/releases)
 [![GitHub Package Repository](https://img.shields.io/static/v1.svg?color=94398d&labelColor=555555&logoColor=ffffff&style=for-the-badge&label=linuxserver.io&message=GitHub%20Package&logo=github)](https://github.com/linuxserver/docker-tvheadend/packages)
@@ -83,9 +83,9 @@ Find the path in the path field of your grabber. We will use the last part. It s
 docker exec -it -u abc tvheadend /usr/bin/for_you_to_fill_out --configure
 ```
 
-Now follow the onscreen progress. If you get asked about cache, just accept the default. After you have configured your grabber, you can go back and enable your grabber.
+Now follow the on-screen progress. If you get asked about cache, just accept the default. After you have configured your grabber, you can go back and enable your grabber.
 
-If you allready have a configuration file, you can add it in the .xmltv folder where you mapped the /config volume. If it's not created, create it.
+If you already have a configuration file, you can add it in the .xmltv folder where you mapped the /config volume. If it's not created, create it.
 
 **Comskip**
 This container comes with Comskip for commercial flagging of recordings. This you have to add in the recording config of tvheadend.
@@ -127,7 +127,6 @@ To help you get started creating a container from this image you can either use 
 
 ```yaml
 ---
-version: "2.1"
 services:
   tvheadend:
     image: lscr.io/linuxserver/tvheadend:latest
@@ -138,7 +137,7 @@ services:
       - TZ=Etc/UTC
       - RUN_OPTS= #optional
     volumes:
-      - /path/to/data:/config
+      - /path/to/tvheadend/data:/config
       - /path/to/recordings:/recordings
     ports:
       - 9981:9981
@@ -160,7 +159,7 @@ docker run -d \
   -e RUN_OPTS= `#optional` \
   -p 9981:9981 \
   -p 9982:9982 \
-  -v /path/to/data:/config \
+  -v /path/to/tvheadend/data:/config \
   -v /path/to/recordings:/recordings \
   --device /dev/dri:/dev/dri `#optional` \
   --device /dev/dvb:/dev/dvb `#optional` \
@@ -171,7 +170,7 @@ docker run -d \
 #### Host vs. Bridge
 
 If you use IPTV, SAT>IP or HDHomeRun, you need to create the container with --net=host and remove the -p flags. This is because to work with these services Tvheadend requires a multicast address of `239.255.255.250` and a UDP port of `1900` which at this time is not possible with docker bridge mode.
-If you have other host services which also use multicast such as SSDP/DLNA/Emby you may experience stabilty problems. These can be solved by giving tvheadend its own IP using macvlan.
+If you have other host services which also use multicast such as SSDP/DLNA/Emby you may experience stability problems.
 
 
 ## Parameters
@@ -260,7 +259,7 @@ We publish various [Docker Mods](https://github.com/linuxserver/docker-mods) to 
 
 ## Updating Info
 
-Most of our images are static, versioned, and require an image update and container recreation to update the app inside. With some exceptions (ie. nextcloud, plex), we do not recommend or support updating apps inside the container. Please consult the [Application Setup](#application-setup) section above to see if it is recommended for the image.
+Most of our images are static, versioned, and require an image update and container recreation to update the app inside. With some exceptions (noted in the relevant readme.md), we do not recommend or support updating apps inside the container. Please consult the [Application Setup](#application-setup) section above to see if it is recommended for the image.
 
 Below are the instructions for updating containers:
 
@@ -325,24 +324,10 @@ Below are the instructions for updating containers:
     docker image prune
     ```
 
-### Via Watchtower auto-updater (only use if you don't remember the original parameters)
-
-* Pull the latest image at its tag and replace it with the same env variables in one run:
-
-    ```bash
-    docker run --rm \
-      -v /var/run/docker.sock:/var/run/docker.sock \
-      containrrr/watchtower \
-      --run-once tvheadend
-    ```
-
-* You can also remove the old dangling images: `docker image prune`
-
-**warning**: We do not endorse the use of Watchtower as a solution to automated updates of existing Docker containers. In fact we generally discourage automated updates. However, this is a useful tool for one-time manual updates of containers where you have forgotten the original parameters. In the long term, we highly recommend using [Docker Compose](https://docs.linuxserver.io/general/docker-compose).
-
 ### Image Update Notifications - Diun (Docker Image Update Notifier)
 
-**tip**: We recommend [Diun](https://crazymax.dev/diun/) for update notifications. Other tools that automatically update containers unattended are not recommended or supported.
+>[!TIP]
+>We recommend [Diun](https://crazymax.dev/diun/) for update notifications. Other tools that automatically update containers unattended are not recommended or supported.
 
 ## Building locally
 
@@ -367,6 +352,8 @@ Once registered you can define the dockerfile to use with `-f Dockerfile.aarch64
 
 ## Versions
 
+* **25.06.24:** - Rebase to Alpine 3.20.
+* **20.03.24:** - Rebase to Alpine 3.19.
 * **16.10.23:** - Add mesa-va-gallium package for AMD transcoding.
 * **20.09.23:** - Add perl-json-xs package.
 * **18.05.23:** - Install XMLTV from Alpine repos.
