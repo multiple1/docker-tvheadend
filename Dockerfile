@@ -13,7 +13,7 @@ ARG ARGTABLE_VER="2.13"
 
 # environment settings
 ARG TZ="Etc/UTC"
-ARG TVHEADEND_COMMIT="fd8b9e8ba21600d0bf6cdb20a7cc153482a2efa5"
+ARG TVHEADEND_COMMIT="f1c460feba34491d473c60216bd35eccc73c178e"
 ENV HOME="/config"
 
 # copy patches and picons
