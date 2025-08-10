@@ -164,6 +164,7 @@ ENV HOME="/config"
 RUN \
   echo "**** install runtime packages ****" && \
   apk add --no-cache \
+    libcap \
     bsd-compat-headers \
     ffmpeg \
     ffmpeg4-libavcodec \
