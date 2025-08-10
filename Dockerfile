@@ -72,6 +72,7 @@ RUN \
   git clone https://github.com/tvheadend/tvheadend.git /tmp/tvheadend && \
   cd /tmp/tvheadend && \
   git checkout ${TVHEADEND_COMMIT} && \
+  git apply /tmp/patches/06c7187a32d0d26acf0bbdda2cfe0ef7819a6d3e.patch && \
   ./configure \
     `#Encoding` \
     --disable-ffmpeg_static \
