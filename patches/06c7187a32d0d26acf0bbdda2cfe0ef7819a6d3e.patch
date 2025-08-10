@@ -1,0 +1,26 @@
+From 06c7187a32d0d26acf0bbdda2cfe0ef7819a6d3e Mon Sep 17 00:00:00 2001
+From: multiple1 <37273764+multiple1@users.noreply.github.com>
+Date: Sun, 10 Aug 2025 13:22:59 +0200
+Subject: [PATCH] Update server.c
+
+remove uid check, no root does not mean ports < 1024 can not be opened, there are capabilities,...
+---
+ src/satip/server.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/src/satip/server.c b/src/satip/server.c
+index 401fd6b63a..62fb4103c1 100644
+--- a/src/satip/server.c
++++ b/src/satip/server.c
+@@ -561,10 +561,7 @@ static void satips_rtsp_port(int def)
+   int rtsp_port = satip_server_rtsp_port;
+   if (!satip_server_rtsp_port_locked)
+     rtsp_port = satip_server_conf.satip_rtsp > 0 ? satip_server_conf.satip_rtsp : def;
+-  if (getuid() != 0 && rtsp_port > 0 && rtsp_port < 1024 && bound_port != rtsp_port) {
+-    tvherror(LS_SATIPS, "RTSP port %d specified but no root perms, using 9983", rtsp_port);
+-    rtsp_port = 9983;
+-  }
++
+   satip_server_rtsp_port = rtsp_port;
+ 
+ }
